@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Analiza Wideo</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: #e0e0e0; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 900px; width: 100%; }
+        video { width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #000; margin-bottom: 20px; }
+        .chapter { background: #1e1e1e; border-left: 4px solid #bb86fc; padding: 15px; margin-bottom: 12px; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
+        .chapter:hover { transform: translateX(5px); background: #252525; }
+        .time { color: #03dac6; font-weight: bold; font-family: monospace; margin-right: 10px; }
+        h2 { border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .summary { font-size: 0.9em; color: #b0b0b0; margin-top: 5px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title">Wczytywanie...</h1>
+        <video id="videoPlayer" controls></video>
+        <h2>Rozdziały</h2>
+        <div id="chapters"></div>
+    </div>
+    <script>
+        // Dane wstrzykiwane przez agenta
+        const data = {
+            "title": "Tytuł Filmu",
+            "video_file": "video.mp4",
+            "chapters": [
+                {"start": 0, "title": "Wstęp", "summary": "Krótkie wprowadzenie do tematu."}
+            ]
+        };
+
+        document.getElementById('title').textContent = data.title;
+        const video = document.getElementById('videoPlayer');
+        video.src = data.video_file;
+
+        const chaptersDiv = document.getElementById('chapters');
+        data.chapters.forEach(ch => {
+            const div = document.createElement('div');
+            div.className = 'chapter';
+            div.innerHTML = `<span class="time">${new Date(ch.start * 1000).toISOString().substr(11, 8)}</span> <strong>${ch.title}</strong><div class="summary">${ch.summary}</div>`;
+            div.onclick = () => { video.currentTime = ch.start; video.play(); };
+            chaptersDiv.appendChild(div);
+        });
+    </script>
+</body>
+</html>
